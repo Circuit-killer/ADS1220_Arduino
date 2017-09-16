@@ -74,6 +74,20 @@ long ADS1220::readADC() {
   return adcVal;
 }
 
+byte * ADS1220::readADC_Array() {
+  digitalWrite(ADS1220_CS_PIN, LOW); // Take CS low
+  delayMicroseconds(1); // Minimum of td(CSSC)
+  static byte dataarray[3];
+  for (int x = 0; x < 3 ; x++)
+  {
+    dataarray[x] = SPI.transfer(SPI_MASTER_DUMMY);
+  }
+  delayMicroseconds(1); // Minimum of td(CSSC)
+  digitalWrite(ADS1220_CS_PIN, HIGH);
+  return dataarray;
+}
+
+
 void ADS1220::sendCommand(uint8_t command) {
   // Following Protocentral's code, not sure exactly what's going on here.
   digitalWrite(ADS1220_CS_PIN, LOW);
@@ -356,3 +370,4 @@ void ADS1220::powerDown() {
 void ADS1220::rdata() {
   sendCommand(CMD_RDATA);
 }
+
